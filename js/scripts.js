@@ -1,50 +1,47 @@
-var pigLatin = function(input) {
+var vowels = ["a", "e", "i", "o", "u", "y"];
 
-  // var splitInput = lowercaseInput.split("");
-  var vowels = ["a", "e", "i", "o", "u", "y"];
-  var consonants = ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z"];
-  var wordsTogether = [];
-
-  var words = input.split(" ");
-
-  words.forEach(function(word) {
-    var letterWord = word.replace(/[^a-z\s]/g, "").toLowerCase()
-    var splitWord = letterWord.split("");
-
-    var firstChecker = function(splitWord) {
-      if (splitWord[0] === "q" && splitWord[1] === "u") {
-        splitWord.shift(splitWord.push(splitWord[0]));
-        splitWord.shift(splitWord.push(splitWord[0]));
-      } else if (consonants.indexOf(splitWord[0]) > -1) {
-        splitWord.shift(splitWord.push(splitWord[0]));
-        firstChecker(splitWord);
-      }
-    }
-      if (splitWord[0] === "y") {
-        splitWord.shift(splitWord.push(splitWord[0]));
-        splitWord.push("ay");
-      } else if (vowels.indexOf(splitWord[0]) > -1) {
-      splitWord.push("ay");
-      } else {
-      firstChecker(splitWord);
-      splitWord.push("ay")
-    }
-      splitWord[0] = splitWord[0].toUpperCase();
-      var output = splitWord.join("");
-      wordsTogether.push(output);
-    })
-    var finishedWords = wordsTogether.join(" ");
-    return finishedWords;
+var is_vowel = function(letter) {
+ if (vowels.indexOf(letter) >= 0) {
+  return true;
+ } else {
+   return false;
+ }
 }
 
+var find_vowel = function(word) {
+  var index;
+  for (index = 0; index < word.length; index++) {
+    if (is_vowel(word[index]) == true){
+      return index;
+    }
+  }
+}
 
+var check_word = function(word) {
+  if (is_vowel(word[0]) == true){
+    return word + "ay";
+  } else {
+    index = find_vowel(word);
+    first_letters = word.slice(0, index);
+    remain_word = word.substring(index, word.length);
+    return remain_word + first_letters + "ay";
+  }
+}
 
-// Front end
+var words = function(words) {
+  word_array = words.split(" ");
+  new_words = [];
+  word_array.forEach(function(word) {
+    new_words.push(check_word(word));
+  });
+  return new_words.join(" ")
+}
+///////////////////////////////////////
 $(function() {
   $("#input").submit(function(event) {
     event.preventDefault();
     var originalString = $("#input input").val();
-    var result = pigLatin(originalString);
+    var result = words(originalString);
     $("#output").text(result);
   })
 });
